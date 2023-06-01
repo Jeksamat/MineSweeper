@@ -12,6 +12,8 @@ public class MineSweeperController {
 
     @FXML
     private GridPane gameGrid;
+    Text text = new Text();
+    Rectangle rectangle = new Rectangle(MineSweeperApp.cellSize-2, MineSweeperApp.cellSize-2);
 
     public void initialize() {
         // Generate cells and add them to the game grid
@@ -29,7 +31,6 @@ public class MineSweeperController {
     }
 
     private Rectangle createCellRectangle(Cell cell) {
-        Rectangle rectangle = new Rectangle(MineSweeperApp.cellSize, MineSweeperApp.cellSize);
         rectangle.setFill(Color.WHITE);
         rectangle.setStroke(Color.BLACK);
         rectangle.setStrokeWidth(1);
@@ -37,10 +38,10 @@ public class MineSweeperController {
     }
 
     private Text createCellText(Cell cell) {
-        Text text = new Text();
         text.setFill(Color.BLACK);
         text.setFont(Font.font(18));
         text.setText(getCellText(cell));
+        text.setVisible(false);
         return text;
     }
 
@@ -49,6 +50,24 @@ public class MineSweeperController {
             return "X"; // Bomb
         } else {
             return String.valueOf(cell.value);
+        }
+    }
+    public void open(Cell cell){
+        if(cell.isOpen){
+            return;
+        }
+        if(cell.value == 9){
+            System.out.println("Game Over");
+            return;
+        }
+
+        cell.isOpen = true;
+        text.setVisible(true);
+        rectangle.setFill(null);
+        if (text.getText().isEmpty()) {
+            for (Cell neighbor : MineSweeperApp.Neighbors(cell)) {
+                open(neighbor);
+            }
         }
     }
 }
